@@ -1,0 +1,19 @@
+{
+  "name": "certificate-list",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.py",
+  "dependencies": {
+    "pymysql": "^1.0.0"
+  },
+  "devDependencies": {
+    "run-local-lambda": "^1.1.1"
+  },
+  "scripts": {
+    "test": "run-local-lambda --file handler.py",
+    "deploy": "aws lambda update-function-code --function-name arn:aws:lambda:us-east-1:505113176967:function:certschedule --zip-file fileb://Lambda-Deployment.zip",
+    "predeploy": "zip -r Lambda-Deployment.zip * -x *.zip *.json *.log"
+  },
+  "author": "",
+  "license": "ISC"
+}
