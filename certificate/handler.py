@@ -28,7 +28,4 @@ def handler(event, context):
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
         cur.execute("SELECT * FROM CERTIFICATE")
         rows = cur.fetchall()
-        # for row in rows:
-        #     for i in range(len(row)):
-        #         print(row[0])
         return rows

@@ -22,13 +22,11 @@ conn = pymysql.connect(host=endpoint, port=port, db=database_name, user=username
 
 
 def handler(event, context):
+    
     """
     MYSQL RDS 쿼리 부분
     """
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
         cur.execute("SELECT name FROM CATEGORY")
         rows = cur.fetchall()
-        # for row in rows:
-        #     for i in range(len(row)):
-        #         print(row[0])
         return rows

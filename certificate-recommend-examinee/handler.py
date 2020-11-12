@@ -26,9 +26,12 @@ def handler(event, context):
     MYSQL RDS 쿼리 부분
     """
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
-        print(event)
-        cur.execute(f"SELECT * FROM CERTIFICATE \
-                    WHERE name LIKE '%{event['q']}%'")
+        cur.execute("SELECT * FROM CERTIFICATE \
+                    ORDER BY examinee DESC \
+                    LIMIT 10")
                 
         rows = cur.fetchall()
+        # for row in rows:
+        #     for i in range(len(row)):
+        #         print(row[0])
         return rows
