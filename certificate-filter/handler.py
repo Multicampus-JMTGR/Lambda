@@ -27,8 +27,25 @@ def handler(event, context):
     """
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
         print(event)
+        
+        keyword = event['queryStringParameters']['keyword']
+        print(keyword)
+        
         cur.execute(f"SELECT * FROM CERTIFICATE \
-                    WHERE name LIKE '%{event['q']}%'")
+                     WHERE name LIKE '%{keyword}%'")
+        
+        # cur.execute(f"SELECT * FROM CERTIFICATE \
+        #             WHERE name LIKE '%{event['keyword']}%'")
                 
         rows = cur.fetchall()
-        return rows
+        return {
+            "statusCode":200,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://jmtgr.s3-website-us-east-1.amazonaws.com",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                "Access-Control-Allow-Credentials": "true"
+            },
+            "body": json.dumps(rows)
+        }

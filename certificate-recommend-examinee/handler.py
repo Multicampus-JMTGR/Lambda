@@ -31,7 +31,14 @@ def handler(event, context):
                     LIMIT 10")
                 
         rows = cur.fetchall()
-        # for row in rows:
-        #     for i in range(len(row)):
-        #         print(row[0])
-        return rows
+        return {
+                "statusCode":200,
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "http://jmtgr.s3-website-us-east-1.amazonaws.com",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                    "Access-Control-Allow-Credentials": "true"
+                },
+                "body": json.dumps(rows)
+            }

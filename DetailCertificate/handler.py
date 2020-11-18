@@ -26,8 +26,18 @@ def handler(event, context):
     cursor = connection.cursor(pymysql.cursors.DictCursor)
     cursor.execute('SELECT * from CERTIFICATE where cert_id = {}'.format(cert_id))
     rows = cursor.fetchall()
+    
+    main_dict = rows[0]
+
     return {
         "statusCode":200,
-        "headers": {'Content-Type': 'application/json'},
-        "body": json.dumps(rows)
+        "headers": {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "http://jmtgr.s3-website-us-east-1.amazonaws.com",
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+            "Access-Control-Allow-Credentials": "true"
+            
+        },
+        "body": json.dumps(main_dict)
     }

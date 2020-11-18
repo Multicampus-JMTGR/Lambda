@@ -44,10 +44,24 @@ def handler(event, context):
         if result == 1:
             connection.commit()
             return {
+                "headers": {
+                        "Content-Type": "application/json",
+                        "Access-Control-Allow-Origin": "http://jmtgr.s3-website-us-east-1.amazonaws.com",
+                        # "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        "Access-Control-Allow-Credentials": "true"
+                    },
                 "statusCode":200,
                 "body":True
             }
         return {
+            "headers": {
+                        "Content-Type": "application/json",
+                        "Access-Control-Allow-Origin": "http://jmtgr.s3-website-us-east-1.amazonaws.com",
+                        # "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                        "Access-Control-Allow-Credentials": "true"
+                    },
             "statusCode":400,
             "body":False
         }

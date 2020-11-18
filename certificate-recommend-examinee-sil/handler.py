@@ -27,11 +27,18 @@ def handler(event, context):
     """
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
         cur.execute("SELECT * FROM CERTIFICATE \
-                    ORDER BY examinee-sil DESC \
+                    ORDER BY examinee_sil DESC \
                     LIMIT 10")
                 
         rows = cur.fetchall()
-        # for row in rows:
-        #     for i in range(len(row)):
-        #         print(row[0])
-        return rows
+        return {
+            "statusCode":200,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://jmtgr.s3-website-us-east-1.amazonaws.com",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                "Access-Control-Allow-Credentials": "true"
+            },
+            "body": json.dumps(rows)
+        }

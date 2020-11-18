@@ -1,5 +1,6 @@
 import pymysql
 import json
+import datetime
 
 #Configuration Values
 endpoint = 'jmtgr.cij2xpo0vglc.us-east-1.rds.amazonaws.com'
@@ -14,32 +15,51 @@ connection = pymysql.connect(endpoint, user=username,
 
 # User Select One - 회원 존재 유무 확인 , User Update - 회원 수정 / 로그인 시 기존회원인 경우 update
 def handler(event, context):
-    print('event : ', event)
+    
+    def datetime_handler(x):
+        if isinstance(x, datetime.date):
+            return x.isoformat()
+        raise TypeError("Unknown type")
+    
     operation = event['httpMethod']
     email = event['pathParameters']['email']
-    print('email : ', email)
+
+    print(operation, email)
     
     if operation == 'GET':
-        
-        main_dict = {}
-        
-        cursor = connection.cursor(pymysql.cursors.DictCursor)
+        print(">>> GET")
+        cur = connection.cursor(pymysql.cursors.DictCursor)
         # 사용자 정보
-        cursor.execute('SELECT * from USER where email="{}"'.format(email))
-        rows = cursor.fetchall()
-        main_dict = rows[0]
+        connection.commit()
+        cur.execute('select * from USER where email="{}"'.format(email))
+        rows = cur.fetchone()
+        print(rows)
         
-        # 사용자가 누른 좋아요 정보
-        cursor.execute('SELECT id, certificate_id from USER_cert_likes where user_id="{}"'.format(email))
-        rows_likes = cursor.fetchall()
-        main_dict['cert_likes'] = rows_likes
+        if rows == None:
+            return {
+                "statusCode":400,
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "http://jmtgr.s3-website-us-east-1.amazonaws.com",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                    "Access-Control-Allow-Credentials": "true"
+                }
+            }
+        else :
+            return {
+                "statusCode":200,
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "http://jmtgr.s3-website-us-east-1.amazonaws.com",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                    "Access-Control-Allow-Credentials": "true"
+                },
+                "body": json.dumps(rows, default=datetime_handler)
+            }
         
         
-        return {
-            "statusCode":200,
-            "headers":{"Content-Type":"application.json"},
-            "body":json.dumps(main_dict)
-        }
     elif operation == 'PUT':
         body = json.loads(event['body'])
         interest = body['interest']

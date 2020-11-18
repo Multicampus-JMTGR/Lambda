@@ -22,11 +22,20 @@ conn = pymysql.connect(host=endpoint, port=port, db=database_name, user=username
 
 
 def handler(event, context):
-    
     """
     MYSQL RDS 쿼리 부분
     """
     with conn.cursor(pymysql.cursors.DictCursor) as cur:
-        cur.execute("SELECT name FROM CATEGORY")
+        cur.execute("SELECT * FROM CERTIFICATE")
         rows = cur.fetchall()
-        return rows
+        return {
+            "statusCode":200,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "http://jmtgr.s3-website-us-east-1.amazonaws.com",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                "Access-Control-Allow-Credentials": "true"
+            },
+            "body": json.dumps(rows)
+        }
